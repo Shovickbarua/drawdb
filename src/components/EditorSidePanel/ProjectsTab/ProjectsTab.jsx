@@ -5,8 +5,7 @@ import {
   listProjectFiles,
   readDiagramFile,
   writeDiagramFile,
-  chooseDiagramsDir,
-  setDiagramsDir,
+  deleteDiagramFile,
 } from "../../../utils/fileSystem";
 import {
   useDiagram,
@@ -98,15 +97,6 @@ export default function ProjectsTab() {
         <Button onClick={() => refresh()} loading={loading}>
           Refresh
         </Button>
-        <Button onClick={async () => {
-          const dir = await chooseDiagramsDir();
-          if (dir) {
-            await setDiagramsDir(dir);
-            await refresh();
-          }
-        }}>
-          Select Storage Folder
-        </Button>
       </div>
       <div className="flex items-center gap-2 mb-2">
         <Input
@@ -188,7 +178,15 @@ export default function ProjectsTab() {
               renderItem={(item) => (
                 <List.Item
                   extra={
-                    <Button onClick={() => openFile(item.handle)}>Open</Button>
+                    <>
+                      <Button style={{ marginRight: 8 }} onClick={() => openFile(item.handle)}>Open</Button>
+                      <Button type="danger" onClick={async () => {
+                        const ok = await deleteDiagramFile(item.name);
+                        if (ok) {
+                          await refresh();
+                        }
+                      }}>Delete</Button>
+                    </>
                   }
                 >
                   {item.name}

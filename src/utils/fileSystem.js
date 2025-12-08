@@ -112,3 +112,16 @@ export async function readDiagramFile(fileHandle) {
     return null;
   }
 }
+
+export async function deleteDiagramFile(fileName) {
+  try {
+    const dir = await getDiagramsDir();
+    if (!dir) return false;
+    const name = fileName.toLowerCase().endsWith(".json") ? fileName : `${fileName}.json`;
+    await dir.removeEntry(name);
+    return true;
+  } catch (e) {
+    console.error(e);
+    return false;
+  }
+}
