@@ -23,6 +23,7 @@ import EnumsTab from "./EnumsTab/EnumsTab";
 import { isRtl } from "../../i18n/utils/rtl";
 import i18n from "../../i18n/i18n";
 import DBMLEditor from "./DBMLEditor";
+import ProjectsTab from "./ProjectsTab/ProjectsTab";
 
 export default function SidePanel({ width, resize, setResize }) {
   const { layout, setLayout } = useLayout();
@@ -40,6 +41,11 @@ export default function SidePanel({ width, resize, setResize }) {
 
   const tabList = useMemo(() => {
     const tabs = [
+      {
+        tab: "Projects",
+        itemKey: Tab.PROJECTS,
+        component: <ProjectsTab />,
+      },
       {
         tab: `${t("tables")} (${tablesCount})`,
         itemKey: Tab.TABLES,
@@ -103,7 +109,7 @@ export default function SidePanel({ width, resize, setResize }) {
             <Tabs
               type="card"
               activeKey={selectedElement.currentTab}
-              lazyRender
+              lazyRender={false}
               keepDOM={false}
               onChange={(key) =>
                 setSelectedElement((prev) => ({ ...prev, currentTab: key }))

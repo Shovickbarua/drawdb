@@ -1,6 +1,5 @@
 import LayoutContextProvider from "../context/LayoutContext";
 import TransformContextProvider from "../context/TransformContext";
-import TablesContextProvider from "../context/DiagramContext";
 import UndoRedoContextProvider from "../context/UndoRedoContext";
 import SelectContextProvider from "../context/SelectContext";
 import AreasContextProvider from "../context/AreasContext";
@@ -25,11 +24,9 @@ export default function Editor() {
                 <NotesContextProvider>
                   <TypesContextProvider>
                     <EnumsContextProvider>
-                      <TablesContextProvider>
-                        <SaveStateContextProvider>
-                          <WorkSpace />
-                        </SaveStateContextProvider>
-                      </TablesContextProvider>
+                      <SaveStateContextProvider>
+                        <WorkSpace />
+                      </SaveStateContextProvider>
                     </EnumsContextProvider>
                   </TypesContextProvider>
                 </NotesContextProvider>

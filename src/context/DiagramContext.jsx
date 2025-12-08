@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext } from "react";
 import { Action, DB, ObjectType, defaultBlue } from "../data/constants";
 import { useTransform, useUndoRedo, useSelect } from "../hooks";
 import { Toast } from "@douyinfe/semi-ui";
@@ -7,11 +7,16 @@ import { nanoid } from "nanoid";
 
 export const DiagramContext = createContext(null);
 
-export default function DiagramContextProvider({ children }) {
+export default function DiagramContextProvider({
+  children,
+  tables,
+  setTables,
+  relationships,
+  setRelationships,
+  database,
+  setDatabase,
+}) {
   const { t } = useTranslation();
-  const [database, setDatabase] = useState(DB.GENERIC);
-  const [tables, setTables] = useState([]);
-  const [relationships, setRelationships] = useState([]);
   const { transform } = useTransform();
   const { setUndoStack, setRedoStack } = useUndoRedo();
   const { selectedElement, setSelectedElement } = useSelect();

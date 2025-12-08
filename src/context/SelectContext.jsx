@@ -9,7 +9,7 @@ export default function SelectContextProvider({ children }) {
     id: -1,
     openDialogue: false,
     openCollapse: false,
-    currentTab: Tab.TABLES,
+    currentTab: Tab.PROJECTS,
     open: false, // open popover or sidesheet when sidebar is disabled
     openFromToolbar: false, // this is to handle triggering onClickOutside when sidebar is disabled
   });

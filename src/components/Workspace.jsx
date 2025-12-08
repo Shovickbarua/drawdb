@@ -2,14 +2,15 @@ import { useState, useEffect, useCallback, createContext } from "react";
 import ControlPanel from "./EditorHeader/ControlPanel";
 import Canvas from "./EditorCanvas/Canvas";
 import { CanvasContextProvider } from "../context/CanvasContext";
+import DiagramContextProvider from "../context/DiagramContext";
 import SidePanel from "./EditorSidePanel/SidePanel";
 import { DB, State } from "../data/constants";
 import { db } from "../data/db";
+import { writeDiagramFile } from "../utils/fileSystem";
 import {
   useLayout,
   useSettings,
   useTransform,
-  useDiagram,
   useUndoRedo,
   useAreas,
   useNotes,
@@ -33,6 +34,10 @@ export const IdContext = createContext({
   setGistId: () => {},
   version: "",
   setVersion: () => {},
+  title: "",
+  setTitle: () => {},
+  diagramId: 0,
+  setDiagramId: () => {},
 });
 
 const SIDEPANEL_MIN_WIDTH = 384;
@@ -58,14 +63,9 @@ export default function WorkSpace() {
   const { saveState, setSaveState } = useSaveState();
   const { transform, setTransform } = useTransform();
   const { enums, setEnums } = useEnums();
-  const {
-    tables,
-    relationships,
-    setTables,
-    setRelationships,
-    database,
-    setDatabase,
-  } = useDiagram();
+  const [tables, setTables] = useState([]);
+  const [relationships, setRelationships] = useState([]);
+  const [database, setDatabase] = useState(DB.GENERIC);
   const { undoStack, redoStack, setUndoStack, setRedoStack } = useUndoRedo();
   const { t, i18n } = useTranslation();
   let [searchParams, setSearchParams] = useSearchParams();
@@ -103,11 +103,24 @@ export default function WorkSpace() {
             ...(databases[database].hasEnums && { enums: enums }),
             ...(databases[database].hasTypes && { types: types }),
           })
-          .then((id) => {
+          .then(async (id) => {
             setId(id);
             window.name = `d ${id}`;
             setSaveState(State.SAVED);
             setLastSaved(new Date().toLocaleString());
+            const payload = {
+              tables: tables,
+              relationships: relationships,
+              notes: notes,
+              subjectAreas: areas,
+              database: database,
+              ...(databases[database].hasTypes && { types: types }),
+              ...(databases[database].hasEnums && { enums: enums }),
+              title: title,
+              transform: transform,
+            };
+            const ok = await writeDiagramFile(title, payload);
+            if (!ok) setSaveState(State.ERROR);
           });
       } else {
         await db.diagrams
@@ -127,9 +140,22 @@ export default function WorkSpace() {
             ...(databases[database].hasEnums && { enums: enums }),
             ...(databases[database].hasTypes && { types: types }),
           })
-          .then(() => {
+          .then(async () => {
             setSaveState(State.SAVED);
             setLastSaved(new Date().toLocaleString());
+            const payload = {
+              tables: tables,
+              relationships: relationships,
+              notes: notes,
+              subjectAreas: areas,
+              database: database,
+              ...(databases[database].hasTypes && { types: types }),
+              ...(databases[database].hasEnums && { enums: enums }),
+              title: title,
+              transform: transform,
+            };
+            const ok = await writeDiagramFile(title, payload);
+            if (!ok) setSaveState(State.ERROR);
           });
       }
     } else {
@@ -504,60 +530,67 @@ export default function WorkSpace() {
 
   return (
     <div className="h-full flex flex-col overflow-hidden theme">
-      <IdContext.Provider value={{ gistId, setGistId, version, setVersion }}>
-        <ControlPanel
-          diagramId={id}
-          setDiagramId={setId}
-          title={title}
-          setTitle={setTitle}
-          lastSaved={lastSaved}
-          setLastSaved={setLastSaved}
-        />
-      </IdContext.Provider>
-      <div
-        className="flex h-full overflow-y-auto"
-        onPointerUp={(e) => e.isPrimary && setResize(false)}
-        onPointerLeave={(e) => e.isPrimary && setResize(false)}
-        onPointerMove={(e) => e.isPrimary && handleResize(e)}
-        onPointerDown={(e) => {
-          // Required for onPointerLeave to trigger when a touch pointer leaves
-          // https://stackoverflow.com/a/70976017/1137077
-          e.target.releasePointerCapture(e.pointerId);
-        }}
-        style={isRtl(i18n.language) ? { direction: "rtl" } : {}}
-      >
-        {layout.sidebar && (
-          <SidePanel resize={resize} setResize={setResize} width={width} />
-        )}
-        <div className="relative w-full h-full overflow-hidden">
-          <CanvasContextProvider className="h-full w-full">
-            <Canvas saveState={saveState} setSaveState={setSaveState} />
-          </CanvasContextProvider>
-          {version && (
-            <div className="absolute right-8 top-2 space-x-2">
-              <Button
-                icon={<i className="fa-solid fa-rotate-right mt-0.5"></i>}
-                onClick={() => setShowRestoreModal(true)}
-              >
-                {t("restore_version")}
-              </Button>
-              <Button
-                type="tertiary"
-                onClick={returnToCurrentDiagram}
-                icon={<i className="bi bi-arrow-return-right mt-1"></i>}
-              >
-                {t("return_to_current")}
-              </Button>
+      <IdContext.Provider value={{ gistId, setGistId, version, setVersion, title, setTitle, diagramId: id, setDiagramId: setId }}>
+        <DiagramContextProvider
+          tables={tables}
+          setTables={setTables}
+          relationships={relationships}
+          setRelationships={setRelationships}
+          database={database}
+          setDatabase={setDatabase}
+        >
+          <ControlPanel
+            diagramId={id}
+            setDiagramId={setId}
+            title={title}
+            setTitle={setTitle}
+            lastSaved={lastSaved}
+            setLastSaved={setLastSaved}
+          />
+          <div
+            className="flex h-full overflow-y-auto"
+            onPointerUp={(e) => e.isPrimary && setResize(false)}
+            onPointerLeave={(e) => e.isPrimary && setResize(false)}
+            onPointerMove={(e) => e.isPrimary && handleResize(e)}
+            onPointerDown={(e) => {
+              // Required for onPointerLeave to trigger when a touch pointer leaves
+              // https://stackoverflow.com/a/70976017/1137077
+              e.target.releasePointerCapture(e.pointerId);
+            }}
+            style={isRtl(i18n.language) ? { direction: "rtl" } : {}}
+          >
+            {layout.sidebar && (
+              <SidePanel resize={resize} setResize={setResize} width={width} />
+            )}
+            <div className="relative w-full h-full overflow-hidden">
+              <CanvasContextProvider className="h-full w-full">
+                <Canvas saveState={saveState} setSaveState={setSaveState} />
+              </CanvasContextProvider>
+              {version && (
+                <div className="absolute right-8 top-2 space-x-2">
+                  <Button
+                    icon={<i className="fa-solid fa-rotate-right mt-0.5"></i>}
+                    onClick={() => setShowRestoreModal(true)}
+                  >
+                    {t("restore_version")}
+                  </Button>
+                  <Button
+                    type="tertiary"
+                    onClick={returnToCurrentDiagram}
+                    icon={<i className="bi bi-arrow-return-right mt-1"></i>}
+                  >
+                    {t("return_to_current")}
+                  </Button>
+                </div>
+              )}
+              {!(layout.sidebar || layout.toolbar || layout.header) && (
+                <div className="fixed right-5 bottom-4">
+                  <FloatingControls />
+                </div>
+              )}
             </div>
-          )}
-          {!(layout.sidebar || layout.toolbar || layout.header) && (
-            <div className="fixed right-5 bottom-4">
-              <FloatingControls />
-            </div>
-          )}
-        </div>
-      </div>
-      <Modal
+          </div>
+        <Modal
         centered
         size="medium"
         closable={false}
@@ -605,8 +638,8 @@ export default function WorkSpace() {
             </div>
           ))}
         </div>
-      </Modal>
-      <Modal
+        </Modal>
+        <Modal
         visible={showRestoreModal}
         centered
         closable
@@ -624,9 +657,11 @@ export default function WorkSpace() {
           setShowRestoreModal(false);
           setVersion(null);
         }}
-      >
-        {t("restore_warning")}
-      </Modal>
+        >
+          {t("restore_warning")}
+        </Modal>
+        </DiagramContextProvider>
+      </IdContext.Provider>
     </div>
   );
 }

@@ -40,6 +40,7 @@ export const Constraint = {
 };
 
 export const Tab = {
+  PROJECTS: "0",
   TABLES: "1",
   RELATIONSHIPS: "2",
   AREAS: "3",
