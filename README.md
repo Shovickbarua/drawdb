@@ -24,3 +24,7 @@
 
 - Diagrams are stored as JSON on the backend after login.
 - Configure `VITE_API_URL` to point the frontend to your backend.
+ - If the server is not deployed or reachable:
+   - Login will not work.
+   - Creating, opening, and deleting projects will not create files.
+   - Deploy and set `VITE_API_URL` to enable backend features.
