@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_BASE = (import.meta?.env?.VITE_API_URL ?? "https://drawdb-jfdn.onrender.com").replace(/\/$/, "");
+const API_BASE = (import.meta?.env?.VITE_API_URL ?? "http://localhost:5179").replace(/\/$/, "");
 
 let authToken = null;
 export function setAuthToken(token) {
