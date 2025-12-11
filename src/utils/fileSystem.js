@@ -1,85 +1,37 @@
-import { db } from "../data/db";
+import axios from "axios";
+const API_BASE = (import.meta?.env?.VITE_API_URL ?? "http://localhost:5179").replace(/\/$/, "");
 
-async function getOpfsDiagramsDir() {
-  try {
-    const root = await navigator.storage.getDirectory();
-    const dir = await root.getDirectoryHandle("diagrams", { create: true });
-    return dir;
-  } catch {
-    return null;
-  }
+let authToken = null;
+export function setAuthToken(token) {
+  authToken = token;
 }
-
-export async function chooseDiagramsDir() {
-  try {
-    const dir = await window.showDirectoryPicker();
-    return dir;
-  } catch {
-    return null;
-  }
-}
-
-export async function setDiagramsDir(handle) {
-  try {
-    await db.settings.put({ key: "diagramsDir", value: handle });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export async function getDiagramsDir() {
-  try {
-    console.log("Getting diagramsDir from Dexie settings...");
-    const rec = await db.settings.get("diagramsDir");
-    console.log("Dexie settings result:", rec);
-    let handle = rec?.value ?? null;
-    if (!handle) {
-      console.log("No handle in settings, using OPFS fallback...");
-      const opfs = await getOpfsDiagramsDir();
-      if (opfs) {
-        await setDiagramsDir(opfs);
-        handle = opfs;
-        console.log("OPFS diagrams directory set and saved.");
-      }
-    }
-    return handle;
-  } catch (e) {
-    console.error("Error getting diagramsDir from Dexie:", e);
-    return null;
-  }
+function isLoggedIn() {
+  return !!authToken;
 }
 
 export async function writeDiagramFile(name, payload) {
   if (!name) return false;
   try {
-    console.log("writeDiagramFile called with name:", name);
-    let dir = await getDiagramsDir();
-    console.log("Current directory handle:", dir);
-    if (!dir) {
-      console.log("No directory set, prompting user to choose...");
-      dir = await chooseDiagramsDir();
-      console.log("User selected directory:", dir);
-      if (!dir) {
-        console.log("User cancelled directory selection");
-        return false;
+    if (isLoggedIn()) {
+      const base = name.replace(/\.json$/i, "");
+      // Try create first, then update (idempotent if already exists)
+      try {
+        await axios.post(
+          `${API_BASE}/api/projects`,
+          { name: base, content: payload },
+          { headers: { Authorization: `Bearer ${authToken}` } }
+        );
+      } catch (e) {
+        // If already exists or create failed, proceed to PUT
       }
-      await setDiagramsDir(dir);
-      console.log("Directory saved to settings");
+      await axios.put(
+        `${API_BASE}/api/projects/` + encodeURIComponent(base),
+        { content: payload },
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      return true;
     }
-    const fileName = `${name}.json`;
-    console.log("Creating file:", fileName);
-    const fileHandle = await dir.getFileHandle(fileName, { create: true });
-    console.log("File handle obtained:", fileHandle);
-    const writable = await fileHandle.createWritable();
-    console.log("Writable stream created");
-    await writable.write(
-      new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" })
-    );
-    console.log("Data written to file");
-    await writable.close();
-    console.log("File closed successfully");
-    return true;
+    return false;
   } catch (e) {
     console.error("Error in writeDiagramFile:", e);
     return false;
@@ -88,15 +40,13 @@ export async function writeDiagramFile(name, payload) {
 
 export async function listProjectFiles() {
   try {
-    const dir = await getDiagramsDir();
-    if (!dir) return [];
-    const files = [];
-    for await (const [name, handle] of dir.entries()) {
-      if (handle.kind === "file" && name.toLowerCase().endsWith(".json")) {
-        files.push({ name, handle });
-      }
+    if (isLoggedIn()) {
+      const r = await axios.get(`${API_BASE}/api/projects`, {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return (r.data.files || []).map((name) => ({ name }));
     }
-    return files;
+    return [];
   } catch (e) {
     console.error(e);
     return [];
@@ -105,9 +55,26 @@ export async function listProjectFiles() {
 
 export async function readDiagramFile(fileHandle) {
   try {
-    const f = await fileHandle.getFile();
-    const text = await f.text();
-    return JSON.parse(text);
+    if (isLoggedIn()) {
+      const r = await axios.get(
+        `${API_BASE}/api/projects/` + encodeURIComponent(fileHandle.name.replace(/\.json$/i, "")),
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      return r.data;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function readDiagramByName(name) {
+  try {
+    const r = await axios.get(
+      `${API_BASE}/api/projects/` + encodeURIComponent(name.replace(/\.json$/i, "")),
+      { headers: { Authorization: `Bearer ${authToken}` } }
+    );
+    return r.data;
   } catch {
     return null;
   }
@@ -115,11 +82,13 @@ export async function readDiagramFile(fileHandle) {
 
 export async function deleteDiagramFile(fileName) {
   try {
-    const dir = await getDiagramsDir();
-    if (!dir) return false;
-    const name = fileName.toLowerCase().endsWith(".json") ? fileName : `${fileName}.json`;
-    await dir.removeEntry(name);
-    return true;
+    if (isLoggedIn()) {
+      await axios.delete(`${API_BASE}/api/projects/` + encodeURIComponent(fileName.replace(/\.json$/i, "")), {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      return true;
+    }
+    return false;
   } catch (e) {
     console.error(e);
     return false;

@@ -6,6 +6,8 @@ import {
   readDiagramFile,
   writeDiagramFile,
   deleteDiagramFile,
+  readDiagramByName,
+  setAuthToken,
 } from "../../../utils/fileSystem";
 import {
   useDiagram,
@@ -26,7 +28,7 @@ export default function ProjectsTab() {
   const [loading, setLoading] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [projectDb, setProjectDb] = useState(DB.GENERIC);
-  const { setTitle, setGistId, setDiagramId } = useContext(IdContext);
+  const { title, setTitle, setGistId, setDiagramId } = useContext(IdContext);
   const { setUndoStack, setRedoStack } = useUndoRedo();
   const { setTransform } = useTransform();
   const { setTables, setRelationships, setDatabase } = useDiagram();
@@ -43,11 +45,18 @@ export default function ProjectsTab() {
   }, []);
 
   useEffect(() => {
+    const t = localStorage.getItem("token");
+    if (t) setAuthToken(t);
     refresh();
   }, [refresh]);
 
   const openFile = async (handle) => {
-    const data = await readDiagramFile(handle);
+    let data = null;
+    if (handle?.getFile) {
+      data = await readDiagramFile(handle);
+    } else if (handle?.name) {
+      data = await readDiagramByName(handle.name);
+    }
     if (!data) return;
     setUndoStack([]);
     setRedoStack([]);
@@ -98,6 +107,7 @@ export default function ProjectsTab() {
           Refresh
         </Button>
       </div>
+      
       <div className="flex items-center gap-2 mb-2">
         <Input
           placeholder="Project name"
@@ -162,7 +172,7 @@ export default function ProjectsTab() {
             });
             if (!ok) return;
             await refresh();
-            
+
           }}
         >
           Create Project
@@ -179,10 +189,32 @@ export default function ProjectsTab() {
                 <List.Item
                   extra={
                     <>
-                      <Button style={{ marginRight: 8 }} onClick={() => openFile(item.handle)}>Open</Button>
+                      <Button style={{ marginRight: 8 }} onClick={() => openFile(item.handle ? item.handle : item)}>
+                        Open
+                      </Button>
                       <Button type="danger" onClick={async () => {
                         const ok = await deleteDiagramFile(item.name);
+                        const projectName = item.name.replace(/\.json$/i, "");
+                        try {
+                          await db.diagrams.where("name").equals(projectName).delete();
+                        } catch (e) { /* no-op */ }
                         if (ok) {
+                          if ((title ?? "").trim() === projectName) {
+                            setTitle("");
+                            setGistId("");
+                            setDiagramId(0);
+                            window.name = "";
+                            setDatabase(DB.GENERIC);
+                            setTables([]);
+                            setRelationships([]);
+                            setNotes([]);
+                            setAreas([]);
+                            setTypes([]);
+                            setEnums([]);
+                            setTransform({ pan: { x: 0, y: 0 }, zoom: 1 });
+                            setUndoStack([]);
+                            setRedoStack([]);
+                          }
                           await refresh();
                         }
                       }}>Delete</Button>
