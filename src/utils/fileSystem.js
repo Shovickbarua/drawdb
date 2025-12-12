@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_BASE = (import.meta?.env?.VITE_API_URL ?? "http://localhost:5179, https://drawdb-diagram.shovickbarua.com").replace(/\/$/, "");
+const API_BASE = (import.meta?.env?.VITE_API_URL ?? "https://drawdb-diagram.shovickbarua.com").replace(/\/$/, "");
 
 let authToken = null;
 export function setAuthToken(token) {
