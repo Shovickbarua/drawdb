@@ -33,9 +33,6 @@ export default function Navbar() {
           <Link to="/">
             <div className="flex items-center gap-3">
               <img src={logo} alt="logo" className="h-[48px] sm:h-[32px]" />
-              <span className="hidden sm:block text-sm font-medium opacity-70">
-                drawDB Fork by Shovick Barua
-              </span>
             </div>
           </Link>
           <div className="md:hidden flex gap-12">
