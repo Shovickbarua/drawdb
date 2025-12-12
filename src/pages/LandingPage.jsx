@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import SimpleCanvas from "../components/SimpleCanvas";
 import Navbar from "../components/Navbar";
@@ -9,38 +9,16 @@ import sqlite_icon from "../assets/sqlite.png";
 import mariadb_icon from "../assets/mariadb.png";
 import oraclesql_icon from "../assets/oraclesql.png";
 import sql_server_icon from "../assets/sql-server.png";
-import discord from "../assets/discord.png";
 import github from "../assets/github.png";
-import warp from "../assets/warp.png";
 import screenshot from "../assets/screenshot.png";
 import FadeIn from "../animations/FadeIn";
-import axios from "axios";
-import { languages } from "../i18n/i18n";
-import { Tweet } from "react-tweet";
 import { socials } from "../data/socials";
 
-function shortenNumber(number) {
-  if (number < 1000) return number;
-
-  if (number >= 1000 && number < 1_000_000)
-    return `${(number / 1000).toFixed(1)}k`;
-}
-
 export default function LandingPage() {
-  const [stats, setStats] = useState({ stars: 18000, forks: 1200 });
-
   useEffect(() => {
-    const fetchStats = async () => {
-      await axios
-        .get("https://api.github-star-counter.workers.dev/user/drawdb-io")
-        .then((res) => setStats(res.data));
-    };
-
     document.body.setAttribute("theme-mode", "light");
     document.title =
-      "drawDB | Online database diagram editor and SQL generator";
-
-    fetchStats();
+      "drawDB Fork by Shovick Barua | Database diagram editor";
   }, []);
 
   return (
@@ -62,39 +40,32 @@ export default function LandingPage() {
             <FadeIn duration={0.75}>
               <div className="md:px-3">
                 <h1 className="text-[42px] md:text-3xl font-bold tracking-wide bg-linear-to-r from-sky-900 from-10% via-slate-500 to-[#12495e] inline-block text-transparent bg-clip-text">
-                  Draw, Copy, and Paste
+                  drawDB Fork by Shovick Barua
                 </h1>
-                <div className="text-lg font-medium mt-1 sliding-vertical">
-                  Free and open source, simple, and intuitive database design
-                  editor, data-modeler, and SQL generator.{" "}
-                  <span className="ms-2 sm:block sm:ms-0 text-slate-500 bg-white font-bold whitespace-nowrap">
-                    No sign up
-                  </span>
-                  <span className="ms-2 sm:block sm:ms-0 text-slate-500 bg-white font-bold whitespace-nowrap">
-                    Free of charge
-                  </span>
-                  <span className="ms-2 sm:block sm:ms-0 text-slate-500 bg-white font-bold whitespace-nowrap">
-                    Quick and easy
-                  </span>
+                <div className="text-lg font-medium mt-2">
+                  Login-based, multi-project, persistent backend storage.
+                </div>
+                <div className="mt-3 flex gap-2 flex-wrap">
+                  <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">Login</span>
+                  <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">Multiple Projects</span>
+                  <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">Persistent Storage</span>
+                  <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">Free & Open Source</span>
+                  <span className="px-3 py-1 rounded-full bg-zinc-100 text-sm">Draw, Copy, and Paste</span>
                 </div>
               </div>
             </FadeIn>
-            <div className="mt-4 font-semibold md:mt-12">
-              <button
-                className="py-3 mb-4 xl:mb-0 mr-4 transition-all duration-300 bg-white border rounded-full shadow-lg px-9 border-zinc-200 hover:bg-zinc-100 cursor-pointer"
-                onClick={() =>
-                  document
-                    .getElementById("learn-more")
-                    .scrollIntoView({ behavior: "smooth" })
-                }
-              >
-                Learn more
-              </button>
+            <div className="mt-6 font-semibold md:mt-12">
               <Link
                 to="/editor"
-                className="inline-block py-3 text-white transition-all duration-300 rounded-full shadow-lg bg-sky-900 ps-7 pe-6 hover:bg-sky-800"
+                className="inline-block py-3 text-white transition-all duration-300 rounded-full shadow-lg bg-sky-900 ps-7 pe-6 hover:bg-sky-800 mr-3"
               >
-                Try it for yourself <i className="bi bi-arrow-right ms-1"></i>
+                Open Editor <i className="bi bi-arrow-right ms-1"></i>
+              </Link>
+              <Link
+                to="/templates"
+                className="inline-block py-3 transition-all duration-300 bg-white border rounded-full shadow-lg px-9 border-zinc-200 hover:bg-zinc-100"
+              >
+                View Templates
               </Link>
             </div>
           </div>
@@ -104,27 +75,17 @@ export default function LandingPage() {
       {/* Learn more */}
       <div id="learn-more">
         <div className="bg-zinc-100 py-10 px-28 md:px-8">
-          {/* Supported by */}
           <div className="text-center mb-16">
-            <div className="text-2xl md:text-xl font-bold text-sky-800 mb-8">
-              Supported by
+            <div className="text-2xl md:text-xl font-bold text-sky-800 mb-3">
+              Demo Credentials
             </div>
-            <div>
-              <a
-                href="https://warp.dev/drawdb"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  src={warp}
-                  alt="warp.dev"
-                  width={260}
-                  className="m-auto mb-4"
-                />
-                <div className="font-semibold text-lg md:text-base">
-                  Next-gen AI-powered intelligent terminal for all platforms
+            <div className="mx-auto max-w-xl shadow-xs rounded-2xl border p-6 bg-white">
+              <div className="text-sm">
+                <div className="flex gap-4 justify-center">
+                  <div>Username: <span className="font-mono">admin</span></div>
+                  <div>Password: <span className="font-mono">admin</span></div>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
           <div className="mt-16 w-[75%] text-center sm:w-full mx-auto shadow-xs rounded-2xl border p-6 bg-white space-y-3 mb-12">
@@ -134,32 +95,7 @@ export default function LandingPage() {
             </div>
             <img src={screenshot} className="mx-auto" />
           </div>
-          <div className="flex justify-center items-center gap-28 md:block">
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(stats.stars)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                GitHub stars
-              </div>
-            </div>
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(stats.forks)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                GitHub forks
-              </div>
-            </div>
-            <div className="text-center mb-4">
-              <div className="text-5xl md:text-3xl font-bold text-sky-800">
-                {shortenNumber(languages.length)}
-              </div>
-              <div className="ms-1 mt-1 font-medium tracking-wide">
-                Languages
-              </div>
-            </div>
-          </div>
+          {/* Stats section removed as requested */}
           <div className="text-lg font-medium text-center mt-12 mb-6">
             Design for your database
           </div>
@@ -188,17 +124,12 @@ export default function LandingPage() {
         </svg>
       </div>
 
-      {/* Features */}
       <div id="features" className="py-8 px-36 md:px-8">
         <FadeIn duration={1}>
-          <div className="text-base font-medium text-center text-sky-900">
-            More than just an editor
-          </div>
-          <div className="text-2xl mt-1 font-medium text-center">
-            What drawDB has to offer
-          </div>
+          <div className="text-base font-medium text-center text-sky-900">Features</div>
+          <div className="text-2xl mt-1 font-medium text-center">Original drawDB features</div>
           <div className="grid grid-cols-3 gap-8 mt-10 md:grid-cols-2 sm:grid-cols-1">
-            {features.map((f, i) => (
+            {originalFeatures.map((f, i) => (
               <div
                 key={"feature" + i}
                 className="flex rounded-xl hover:bg-zinc-100 border border-zinc-100 shadow-xs hover:-translate-y-2 transition-all duration-300"
@@ -215,23 +146,29 @@ export default function LandingPage() {
         </FadeIn>
       </div>
 
-      {/* Tweets */}
-      <div className="px-40 mt-6 md:px-8">
-        <div className="text-center text-2xl md:text-xl font-medium">
-          What the internet says about us
-        </div>
-        <div
-          data-theme="light"
-          className="grid grid-cols-2 place-items-center md:grid-cols-1"
-        >
-          <Tweet id="1816111365125218343" />
-          <Tweet id="1817933406337905021" />
-          <Tweet id="1785457354777006524" />
-          <Tweet id="1776842268042756248" />
-        </div>
+      <div id="fork-features" className="py-4 px-36 md:px-8">
+        <FadeIn duration={1}>
+          <div className="text-2xl mt-1 font-medium text-center">Fork additions</div>
+          <div className="grid grid-cols-3 gap-8 mt-10 md:grid-cols-2 sm:grid-cols-1">
+            {forkFeatures.map((f, i) => (
+              <div
+                key={"fork-feature" + i}
+                className="flex rounded-xl hover:bg-zinc-100 border border-zinc-100 shadow-xs hover:-translate-y-2 transition-all duration-300"
+              >
+                <div className="bg-sky-700 px-0.5 rounded-l-xl" />
+                <div className="px-8 py-4 ">
+                  <div className="text-lg font-semibold mb-3">{f.title}</div>
+                  {f.content}
+                  <div className="mt-2 text-xs opacity-60">{f.footer}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </FadeIn>
       </div>
 
-      {/* Contact us */}
+      
+
       <svg
         viewBox="0 0 1440 54"
         fill="none"
@@ -245,63 +182,48 @@ export default function LandingPage() {
         />
       </svg>
       <div className="bg-zinc-100 py-8 px-32 md:px-8">
-        <div className="mt-4 mb-2 text-2xl font-bold text-center">
-          Reach out to us
-        </div>
-        <div className="text-lg text-center mb-4">
-          We love hearing from you. Join our community on Discord, GitHub, and
-          X.
-        </div>
-        <div className="px-36 text-center md:px-8">
-          <div className="md:block md:space-y-3 flex gap-3 justify-center">
-            <a
-              className="inline-block"
-              href={socials.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
-                <img src={github} className="h-8" />
-                <div className="text-lg text-white font-bold">
-                  See the source
-                </div>
-              </div>
-            </a>
-            <a
-              className="inline-block"
-              href={socials.discord}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="bg-[#5865f2] hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-8 py-4 rounded-lg">
-                <img src={discord} className="h-8" />
-                <div className="text-lg text-white font-bold">
-                  Join us on Discord
-                </div>
-              </div>
-            </a>
-            <a
-              className="inline-block"
-              href={socials.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div className="text-white bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-12 py-4 rounded-lg">
-                <i className="text-2xl bi bi-twitter-x" />
-                <div className="text-lg  font-bold">Follow us on X</div>
-              </div>
-            </a>
-          </div>
+        <div className="px-36 text-center md:px-8 flex justify-center items-center gap-6 md:block">
+          <a
+            className="inline-block"
+            href={socials.github}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
+              <img src={github} className="h-8" />
+              <div className="text-lg text-white font-bold">Source code on GitHub</div>
+            </div>
+          </a>
+          <a
+            className="inline-block"
+            href="https://github.com/Shovickbarua/drawdb"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="bg-zinc-800 hover:opacity-90 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
+              <i className="bi bi-github text-white text-2xl" />
+              <div className="text-lg text-white font-bold">Fork source (Shovick)</div>
+            </div>
+          </a>
+          <a
+            className="inline-block"
+            href="https://drawdb.app"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <div className="bg-white border border-zinc-300 hover:bg-zinc-100 transition-all duration-300 flex items-center gap-4 px-14 py-4 rounded-lg">
+              <div className="text-lg font-bold">Open drawdb.app</div>
+            </div>
+          </a>
         </div>
       </div>
 
       <div className="bg-red-700 py-1 text-center text-white text-xs font-semibold px-3">
-        Attention! The diagrams are saved in your browser. Before clearing the
-        browser make sure to back up your data.
+        Projects are saved on the server when logged in. If not logged in, data is saved in your browser; back up before clearing it.
       </div>
       <hr className="border-zinc-300" />
       <div className="text-center text-sm py-3">
-        &copy; {new Date().getFullYear()} <strong>drawDB</strong> - All rights reserved.
+        &copy; {new Date().getFullYear()} <strong>drawDB Fork by Shovick Barua</strong> - All rights reserved.
       </div>
     </div>
   );
@@ -316,7 +238,7 @@ const dbs = [
   { icon: oraclesql_icon, height: 172 },
 ];
 
-const features = [
+const originalFeatures = [
   {
     title: "Export",
     content: (
@@ -436,6 +358,39 @@ const features = [
   {
     title: "Track todos",
     content: <div>Keep track of tasks and mark them done when finished.</div>,
+    footer: "",
+  },
+];
+
+const forkFeatures = [
+  {
+    title: "Login",
+    content: <div>Authenticate to save and manage projects on the backend.</div>,
+    footer: "",
+  },
+  {
+    title: "Multiple projects",
+    content: <div>Create, open, and manage multiple diagrams per account.</div>,
+    footer: "",
+  },
+  {
+    title: "Delete projects",
+    content: <div>Remove projects safely; the editor clears associated data.</div>,
+    footer: "",
+  },
+  {
+    title: "Persistent storage",
+    content: <div>Diagrams are stored as JSON on the backend after login.</div>,
+    footer: "",
+  },
+  {
+    title: "Self-host",
+    content: <div>Deploy your own backend for full control and sovereignty.</div>,
+    footer: "",
+  },
+  {
+    title: "Free & open source",
+    content: <div>Use it freely and extend it as you wish.</div>,
     footer: "",
   },
 ];

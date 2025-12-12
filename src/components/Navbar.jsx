@@ -31,7 +31,12 @@ export default function Navbar() {
       <div className="py-4 px-12 sm:px-4 flex justify-between items-center">
         <div className="flex items-center justify-between w-full">
           <Link to="/">
-            <img src={logo} alt="logo" className="h-[48px] sm:h-[32px]" />
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="logo" className="h-[48px] sm:h-[32px]" />
+              <span className="hidden sm:block text-sm font-medium opacity-70">
+                drawDB Fork by Shovick Barua
+              </span>
+            </div>
           </Link>
           <div className="md:hidden flex gap-12">
             <Link
@@ -82,29 +87,11 @@ export default function Navbar() {
             <a
               title="Jump to Github"
               className="px-2 py-2 hover:opacity-60 transition-all duration-300 rounded-full text-2xl"
-              href={socials.github}
+              href="https://github.com/Shovickbarua/drawdb"
               target="_blank"
               rel="noreferrer"
             >
               <i className="opacity-70 bi bi-github" />
-            </a>
-            <a
-              title="Follow us on X"
-              className="px-2 py-2 hover:opacity-60 transition-all duration-300 rounded-full text-2xl"
-              href={socials.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <i className="opacity-70 bi bi-twitter-x" />
-            </a>
-            <a
-              title="Join the community on Discord"
-              className="px-2 py-2 hover:opacity-60 transition-all duration-300 rounded-full text-2xl"
-              href={socials.discord}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <i className="opacity-70 bi bi-discord" />
             </a>
           </div>
         </div>

@@ -1,6 +1,6 @@
 <div align="center">
   <img width="64" alt="logo" src="./src/assets/icon-dark.png">
-  <h1>DrawDB Fork (Open Source)</h1>
+  <h1>drawDB Fork by Shovick Barua</h1>
 </div>
 
 <p align="center">
@@ -24,7 +24,15 @@
 
 - Diagrams are stored as JSON on the backend after login.
 - Configure `VITE_API_URL` to point the frontend to your backend.
- - If the server is not deployed or reachable:
-   - Login will not work.
-   - Creating, opening, and deleting projects will not create files.
-   - Deploy and set `VITE_API_URL` to enable backend features.
+- If the server is not deployed or reachable:
+  - Login will not work.
+  - Creating, opening, and deleting projects will not create files.
+  - Deploy and set `VITE_API_URL` to enable backend features.
+
+## Demo Server
+
+- Demo credentials:
+  - Username: `admin`
+  - Password: `admin`
+
+Set `VITE_API_URL` to the demo backend to try it without self-hosting.
