@@ -14,6 +14,7 @@ export default function Navbar() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  const [loggingIn, setLoggingIn] = useState(false);
 
   useEffect(() => {
     const t = localStorage.getItem("token");
@@ -152,14 +153,18 @@ export default function Navbar() {
           <Input placeholder="Password" type="password" value={password} onChange={setPassword} />
           <Button
             type="primary"
+            loading={loggingIn}
+            disabled={loggingIn}
             onClick={async () => {
+              setLoggingIn(true);
               try {
                 const r = await axios.post(`${API_BASE}/api/login`, { username, password });
                 localStorage.setItem("token", r.data.token);
                 setAuthToken(r.data.token);
                 setIsLoggedIn(true);
                 setOpenLogin(false);
-              } catch (e) { return; }
+              } catch (e) { console.error(e); }
+              finally { setLoggingIn(false); }
             }}
           >
             Login
