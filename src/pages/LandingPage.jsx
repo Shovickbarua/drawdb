@@ -182,7 +182,7 @@ export default function LandingPage() {
         />
       </svg>
       <div className="bg-zinc-100 py-8 px-32 md:px-8">
-        <div className="px-36 text-center md:px-8 flex justify-center items-center gap-6 md:block">
+        <div className="px-36 text-center md:px-8 flex justify-center items-center gap-6 md:block space-y-2">
           <a
             className="inline-block"
             href={socials.github}
