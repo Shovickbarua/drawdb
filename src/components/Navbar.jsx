@@ -6,7 +6,7 @@ import { IconMenu } from "@douyinfe/semi-icons";
 import { socials } from "../data/socials";
 import { setAuthToken } from "../utils/fileSystem";
 import axios from "axios";
-const API_BASE = (import.meta?.env?.VITE_API_URL ?? "http://localhost:5179").replace(/\/$/, "");
+const API_BASE = (import.meta?.env?.VITE_API_URL ?? "http://localhost:5179, https://drawdb-diagram.onrender.com").replace(/\/$/, "");
 
 export default function Navbar() {
   const [openMenu, setOpenMenu] = useState(false);
