@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/logo_light_160.png";
-import { SideSheet, Button, Input } from "@douyinfe/semi-ui";
+import { SideSheet, Button, Input, Banner } from "@douyinfe/semi-ui";
 import { IconMenu } from "@douyinfe/semi-icons";
 import { socials } from "../data/socials";
 import { setAuthToken } from "../utils/fileSystem";
@@ -180,6 +180,20 @@ export default function Navbar() {
           >
             Login
           </Button>
+          <Banner
+            fullMode={false}
+            type="info"
+            bordered
+            icon={null}
+            closeIcon={null}
+            description={
+              <div className="text-sm">
+                <div className="font-semibold mb-1">Login Credentials</div>
+                <div className="flex items-center gap-2"><span className="opacity-70">Username</span><span className="font-mono">admin</span></div>
+                <div className="flex items-center gap-2"><span className="opacity-70">Password</span><span className="font-mono">admin</span></div>
+              </div>
+            }
+          />
         </div>
       </SideSheet>
     </>
