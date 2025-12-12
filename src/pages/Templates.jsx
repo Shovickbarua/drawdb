@@ -5,7 +5,7 @@ import { IconDeleteStroked } from "@douyinfe/semi-icons";
 import { db } from "../data/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import Thumbnail from "../components/Thumbnail";
-import logo_light from "../assets/logo_light_160.png";
+import logo from "../assets/drawdb-1.png";
 import template_screenshot from "../assets/template_screenshot.png";
 
 export default function Templates() {
@@ -42,7 +42,7 @@ export default function Templates() {
           <div className="flex items-center justify-start">
             <Link to="/">
               <img
-                src={logo_light}
+                src={logo}
                 alt="logo"
                 className="me-2 sm:h-[28px] md:h-[46px] h-[48px]"
               />
