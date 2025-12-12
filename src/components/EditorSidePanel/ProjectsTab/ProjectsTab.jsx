@@ -196,7 +196,9 @@ export default function ProjectsTab() {
                         const ok = await deleteDiagramFile(item.name);
                         const projectName = item.name.replace(/\.json$/i, "");
                         try {
-                          await db.diagrams.where("name").equals(projectName).delete();
+                          await db.diagrams
+                            .filter((d) => (d.name || "").toLowerCase() === projectName.toLowerCase())
+                            .delete();
                         } catch (e) { /* no-op */ }
                         if (ok) {
                           if ((title ?? "").trim() === projectName) {
