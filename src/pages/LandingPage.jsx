@@ -370,7 +370,7 @@ const forkFeatures = [
   },
   {
     title: "Multiple projects",
-    content: <div>Create, open, and manage multiple diagrams per account.</div>,
+    content: <div>Create, open, and manage multiple diagrams.</div>,
     footer: "",
   },
   {
