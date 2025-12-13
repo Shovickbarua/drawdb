@@ -18,7 +18,7 @@ export default function LandingPage() {
   useEffect(() => {
     document.body.setAttribute("theme-mode", "light");
     document.title =
-      "drawDB Fork by Shovick Barua | Database diagram editor";
+      "drawDB by Shovick Barua | Database diagram editor";
   }, []);
 
   return (
@@ -40,7 +40,7 @@ export default function LandingPage() {
             <FadeIn duration={0.75}>
               <div className="md:px-3">
                 <h1 className="text-[42px] md:text-3xl font-bold tracking-wide bg-linear-to-r from-sky-900 from-10% via-slate-500 to-[#12495e] inline-block text-transparent bg-clip-text">
-                  drawDB Fork by Shovick Barua
+                  drawDB by Shovick Barua
                 </h1>
                 <div className="text-lg font-medium mt-2">
                   Login-based, multi-project, persistent backend storage.
@@ -223,7 +223,7 @@ export default function LandingPage() {
       </div>
       <hr className="border-zinc-300" />
       <div className="text-center text-sm py-3">
-        &copy; {new Date().getFullYear()} <strong>drawDB Fork by Shovick Barua</strong> - All rights reserved.
+        &copy; {new Date().getFullYear()} <strong>drawDB by Shovick Barua</strong> - All rights reserved.
       </div>
     </div>
   );

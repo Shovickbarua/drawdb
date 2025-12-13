@@ -1,6 +1,6 @@
 <div align="center">
   <img width="64" alt="logo" src="./src/assets/icon-dark.png">
-  <h1>drawDB Fork by Shovick Barua</h1>
+  <h1>drawDB by Shovick Barua</h1>
 </div>
 
 <p align="center">
@@ -28,6 +28,20 @@
   - Login will not work.
   - Creating, opening, and deleting projects will not create files.
   - Deploy and set `VITE_API_URL` to enable backend features.
+
+## Deploy for free (Frontend on Vercel, Backend on Render)
+
+### Backend (Render)
+- Create a new Web Service from this repository.
+- Set root directory to `backend`.
+- Build command: `npm install`
+- Start command: `npm run start`
+
+### Frontend (Vercel)
+- Import the repository and use the Vite/React preset.
+- Environment variables:
+  - `VITE_API_URL`: set to your Render backend URL (e.g. `https://your-backend.onrender.com`)
+- Deploy. The app will use your backend for login and project storage.
 
 ## Demo Server
 
